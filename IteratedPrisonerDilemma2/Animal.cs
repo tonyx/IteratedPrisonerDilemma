@@ -11,18 +11,14 @@ namespace IteratedPrisonerDilemma2
 {
     public class Animal
     {
-        int prisonerDilemmaPlayingTime;
-        private bool isPlaying = false;
         private Vector2 position;
         private Rectangle drawRectangle;
         private double angle;
         private Vector2 direction;
         private Vector2 directionWithSpeed;
         private AnimalType animalType;
-        private PrisonerDilemmaSequenceOfIterations currentGame;
         private int score=0;
 
-        private bool availableForGame = true;
 
         public bool IsInaGame(List<PrisonerDilemmaSequenceOfIterations> games) {
             foreach (PrisonerDilemmaSequenceOfIterations game in games) {
@@ -50,7 +46,6 @@ namespace IteratedPrisonerDilemma2
             }
         }
 
-
         public AnimalType AnimalType {
             get {
                 return this.animalType;
@@ -64,7 +59,7 @@ namespace IteratedPrisonerDilemma2
 
 
         public void Update(GameTime gameTime, List<PrisonerDilemmaSequenceOfIterations> currentGames) {
-            if (!this.IsInaGame(currentGames) ) {
+            //if (!this.IsInaGame(currentGames) ) {
                 adjustDirection ();
                 adjustDirection ();
 
@@ -87,7 +82,7 @@ namespace IteratedPrisonerDilemma2
                 if (position.Y <= 0 && direction.Y < 0) {
                     direction.Y *= -1;
                 }
-            }
+            //}
        }
 
         private void adjustDirection() {
