@@ -97,7 +97,6 @@ namespace IteratedPrisonerDilemma2
         }
 
         private void SetInitialRandomPosition () {
-            isPlaying = false;
 
             position = new Vector2 ( GlobalRandom.Instance().NextInt(Constants.WINDOW_WIDTH-1) , GlobalRandom.Instance().NextInt(Constants.WINDOW_HEIGHT-1));
 
