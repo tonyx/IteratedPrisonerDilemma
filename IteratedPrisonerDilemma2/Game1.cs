@@ -135,8 +135,6 @@ namespace IteratedPrisonerDilemma2
                 int[] scores = game.CumulateGamingScores ();
                 game.Animal1.AddScore (scores [0]);
                 game.Animal2.AddScore (scores [1]);
-                Console.Out.WriteLine (game.Animal1.AnimalType.AnimalTypeName+" "+game.Animal1.AnimalType.Score);
-                Console.Out.WriteLine (game.Animal2.AnimalType.AnimalTypeName+" "+game.Animal2.AnimalType.Score);
             }
             games = new List<PrisonerDilemmaSequenceOfIterations> ();
 
@@ -165,11 +163,6 @@ namespace IteratedPrisonerDilemma2
                 spriteBatch.DrawString (spriteFont, animalType.AnimalTypeName+"  "+animalType.Score, new Vector2 (Constants.PANEL_INIT_X_POSITION + 4, Constants.PANEL_INIT_Y_POSITION + index), Color.Black);
                 index += 40;
             }
-
-
-
-//            spriteBatch.DrawString (spriteFont, item.Item2+ " "+item.Item3+" %", new Vector2 (Constants.PANEL_INIT_X_POSITION + 4, Constants.PANEL_INIT_Y_POSITION+index), Color.Black);
-//            spriteBatch.DrawString (spriteFont, "hello", new Vector2 (Constants.PANEL_INIT_X_POSITION + 4, Constants.PANEL_INIT_Y_POSITION+1), Color.Black);
 
 
             spriteBatch.End ();
