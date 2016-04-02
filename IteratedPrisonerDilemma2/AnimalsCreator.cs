@@ -72,7 +72,6 @@ namespace IteratedPrisonerDilemma2
             }
         }
 
-
         public List<Animal> Animals() {
             return animals;
         }

@@ -13,12 +13,6 @@ namespace IteratedPrisonerDilemma2
         private Texture2D animalImage;
         private string animalTypeName;
 
-//        public AnimalType (MoveStrategy moveStrategy, Texture2D animalImage)
-//        {
-//            this.moveStrategy = moveStrategy;
-//            this.animalImage = animalImage;
-//        }
-
         public string AnimalTypeName {
             get {
                 return this.animalTypeName;

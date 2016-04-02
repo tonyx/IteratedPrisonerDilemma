@@ -101,9 +101,6 @@ namespace IteratedPrisonerDilemma2
             #endif
             // TODO: Add your update logic here            
 
-//            foreach (var animal in animals)  {
-//                animal.Update(gameTime);
-//            }
 
             foreach (var animal in animals)  {
                 animal.Update(gameTime,games);
@@ -137,7 +134,6 @@ namespace IteratedPrisonerDilemma2
                 game.Animal2.AddScore (scores [1]);
             }
             games = new List<PrisonerDilemmaSequenceOfIterations> ();
-
 
             base.Update (gameTime);
         }

@@ -38,12 +38,6 @@ namespace IteratedPrisonerDilemma2
             SetInitialRandomPosition ();
         }
 
-        public PrisonerDilemmaSequenceOfIterations CurrentGame {
-            set {
-                this.currentGame = value;
-            }
-
-        }
 
         public void AddScore(int addingScore) {
             this.score += addingScore;
@@ -56,29 +50,10 @@ namespace IteratedPrisonerDilemma2
             }
         }
 
-        public bool IsPlaying {
-            
-            private set {
-                this.isPlaying = value;
-            }
-            [MethodImpl(MethodImplOptions.Synchronized)]
-                get {
-                    return this.isPlaying;
-                }
-        }
 
         public AnimalType AnimalType {
             get {
                 return this.animalType;
-            }
-        }
-
-        public bool AvailableForAGame {
-            get {
-                return this.availableForGame;
-            }
-            set {
-                this.availableForGame = value;
             }
         }
 
@@ -115,50 +90,6 @@ namespace IteratedPrisonerDilemma2
             }
        }
 
-
-        public void Update(GameTime gameTime) {
-
-
-            if (!IsPlaying) {
-                adjustDirection ();
-
-                position.X = position.X + directionWithSpeed.X * gameTime.ElapsedGameTime.Milliseconds;
-                position.Y = position.Y + directionWithSpeed.Y * gameTime.ElapsedGameTime.Milliseconds;
-                Console.WriteLine (gameTime.ElapsedGameTime.Milliseconds);
-                drawRectangle.X = (int)position.X;
-                drawRectangle.Y = (int)position.Y;
-
-                if (position.X >= Constants.WINDOW_WIDTH - Constants.RIGHT_MARGIN && direction.X > 0)
-                    direction.X *= -1;
-
-                if (position.X <= 0 && direction.X < 0)
-                    direction.X *= -1;
-
-                if (position.Y >= Constants.WINDOW_HEIGHT && direction.Y > 0) {
-                    direction.Y *= -1;
-                }
-
-                if (position.Y <= 0 && direction.Y < 0) {
-                    direction.Y *= -1;
-                }
-            } else {
-                this.prisonerDilemmaPlayingTime += gameTime.ElapsedGameTime.Milliseconds; 
-                if (this.prisonerDilemmaPlayingTime > Constants.PLAYING_TIME) {
-                    StopPlaying ();
-                }
-
-//                if (this.prisonerDilemmaPlayingTime > Constants.UNAVAILABILITY_TIME) {
-//                    AvailableForAGame = true;
-//                }
-
-            }
-            if (this.prisonerDilemmaPlayingTime > Constants.UNAVAILABILITY_TIME) {
-                AvailableForAGame = true;
-            }
-            Console.WriteLine ("exit"  + gameTime.ElapsedGameTime.Milliseconds);
-
-        }
-
         private void adjustDirection() {
 
             this.direction.X = this.direction.X + (float)(GlobalRandom.Instance().NextFloat () - 0.5) * Constants.DIRECTION_ADJUSTMENT_FACTOR;
@@ -186,26 +117,6 @@ namespace IteratedPrisonerDilemma2
 
         public bool CollideWith(Animal other) {
             return this.drawRectangle.Intersects (other.drawRectangle);
-        }
-
-        public void StartPlaying() {
-            this.isPlaying = true;
-            this.prisonerDilemmaPlayingTime = 0;
-        }
-
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public void StartPlayWith(Animal other,GameTime gameTime) {
-
-            this.prisonerDilemmaPlayingTime = 0;
-            this.IsPlaying = true;
-            other.prisonerDilemmaPlayingTime = 0;
-            other.IsPlaying = true;
-
-        }
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public void StopPlaying() {
-            IsPlaying = false;
-            this.prisonerDilemmaPlayingTime = 0;
         }
 
     }
