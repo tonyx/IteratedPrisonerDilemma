@@ -127,7 +127,6 @@ namespace IteratedPrisonerDilemma2
 
             // elaborate all current games:
 
-
             foreach (var game in games) {
                 int[] scores = game.CumulateGamingScores ();
                 game.Animal1.AddScore (scores [0]);
@@ -153,13 +152,11 @@ namespace IteratedPrisonerDilemma2
                 animal.Draw (spriteBatch);
             }
 
-
             int index = 0;
             foreach (var animalType in animalTypes) {
                 spriteBatch.DrawString (spriteFont, animalType.AnimalTypeName+"  "+animalType.Score, new Vector2 (Constants.PANEL_INIT_X_POSITION + 4, Constants.PANEL_INIT_Y_POSITION + index), Color.Black);
                 index += 40;
             }
-
 
             spriteBatch.End ();
             

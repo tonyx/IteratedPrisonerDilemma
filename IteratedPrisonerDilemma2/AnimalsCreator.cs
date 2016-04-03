@@ -16,7 +16,7 @@ namespace IteratedPrisonerDilemma2
         {
             this.random = new Random (System.DateTime.Now.Millisecond);
 
-            AnimalType cooperator = new AnimalType (new MoveStrategy((x, y) => PlayMoves.Cooperate), content.Load<Texture2D> ("blue_circle"),"Cooperator");
+            AnimalType cooperator = new AnimalType ((x, y) => PlayMoves.Cooperate, content.Load<Texture2D> ("blue_circle"),"Cooperator");
             AnimalType defeater = new AnimalType (new MoveStrategy ((x, y) => PlayMoves.Defect), content.Load<Texture2D> ("green_circle"),"Defector");
             AnimalType randomAnimal = new AnimalType ((x, y) => {
                 if (random.Next (2) < 1)
@@ -33,13 +33,16 @@ namespace IteratedPrisonerDilemma2
 
             },content.Load <Texture2D>("yellow_circle"),"TitForTat");
 
+
+//            AnimalType titForTat = new AnimalType ((x, y) => PlayMoves.Cooperate, content.Load<Texture2D> ("yellow_circle"),"TitForTat");
+
             animalTypes = new List<AnimalType> ();
 
             animals = new List<Animal> ();
 
-            animalTypes.Add (cooperator);
+            animalTypes.Add (titForTat);
             for (int i = 0; i < 10; i++) {
-                animals.Add (new Animal (cooperator));
+                animals.Add (new Animal (titForTat));
             }
 
             animalTypes.Add (defeater);
@@ -47,15 +50,19 @@ namespace IteratedPrisonerDilemma2
                 animals.Add (new Animal (defeater));
             }
 
-            animalTypes.Add (randomAnimal);
+//            animalTypes.Add (randomAnimal);
+//            for (int i = 0; i < 10; i++) {
+//                animals.Add (new Animal (randomAnimal));
+//            }
+//
+            animalTypes.Add(cooperator);
             for (int i = 0; i < 10; i++) {
-                animals.Add (new Animal (randomAnimal));
+                animals.Add (new Animal (cooperator));
             }
 
-            animalTypes.Add(titForTat);
-            for (int i = 0; i < 10; i++) {
-                animals.Add (new Animal (titForTat));
-            }
+
+            List<Animal> randomizedAnimals = animals.OrderBy (x => random.Next ()).ToList();
+            animals = randomizedAnimals;
 
         }
 
