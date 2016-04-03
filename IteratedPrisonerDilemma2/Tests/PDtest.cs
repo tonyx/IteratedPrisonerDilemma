@@ -26,8 +26,8 @@ namespace IteratedPrisonerDilemma2
 
         [Test]
         public void DefeaterWillDefeatAtFirstMove() {
-            MoveStrategy defeatStrategy = (x,y) => PlayMoves.Defeat;
-            var expected = PlayMoves.Defeat;
+            MoveStrategy defeatStrategy = (x,y) => PlayMoves.Defect;
+            var expected = PlayMoves.Defect;
 
             var actual = defeatStrategy (new List<PlayMoves> (), new List<PlayMoves> ());
 
@@ -37,10 +37,10 @@ namespace IteratedPrisonerDilemma2
 
         [Test]
         public void DefeaterWillDefeatAtAnyTime() {
-            MoveStrategy defeatStrategy = (x,y) => PlayMoves.Defeat;
-            var expected = PlayMoves.Defeat;
+            MoveStrategy defeatStrategy = (x,y) => PlayMoves.Defect;
+            var expected = PlayMoves.Defect;
 
-            var actual = defeatStrategy (new List<PlayMoves> {PlayMoves.Defeat}, new List<PlayMoves> {PlayMoves.Defeat});
+            var actual = defeatStrategy (new List<PlayMoves> {PlayMoves.Defect}, new List<PlayMoves> {PlayMoves.Defect});
 
             Assert.AreEqual (expected, actual);
 
@@ -86,7 +86,7 @@ namespace IteratedPrisonerDilemma2
 
         [Test]
         public void GetCumulateScoreOfTwoDefeaters() {
-            MoveStrategy defeatStrategy = (x,y) => PlayMoves.Defeat;
+            MoveStrategy defeatStrategy = (x,y) => PlayMoves.Defect;
             PrisonerDilemmaSequenceOfIterations game = new PrisonerDilemmaSequenceOfIterations (2,defeatStrategy,defeatStrategy);
             int[] scores = game.CumulateGamingScores();
             Assert.AreEqual (8, scores [0]);
@@ -96,7 +96,7 @@ namespace IteratedPrisonerDilemma2
 
         [Test]
         public void GetCumulateScoreOfTwoDefeatersInAGameOfThreeSteps() {
-            MoveStrategy defeatStrategy = (x,y) => PlayMoves.Defeat;
+            MoveStrategy defeatStrategy = (x,y) => PlayMoves.Defect;
             PrisonerDilemmaSequenceOfIterations game = new PrisonerDilemmaSequenceOfIterations (3,defeatStrategy,defeatStrategy);
             int[] scores = game.CumulateGamingScores();
             Assert.AreEqual (12, scores [0]);
@@ -117,7 +117,7 @@ namespace IteratedPrisonerDilemma2
         [Test]
         public void CumulateScoreOfACooperatorAgainstADefeater() {
             MoveStrategy cooperator = (x,y) => PlayMoves.Cooperate;
-            MoveStrategy defeater = (x,y) => PlayMoves.Defeat;
+            MoveStrategy defeater = (x,y) => PlayMoves.Defect;
             PrisonerDilemmaSequenceOfIterations game = new PrisonerDilemmaSequenceOfIterations (3,cooperator,defeater);
             int[] scores = game.CumulateGamingScores();
             Assert.AreEqual (0, scores [0]);

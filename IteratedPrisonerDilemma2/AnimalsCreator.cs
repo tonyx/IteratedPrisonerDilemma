@@ -17,12 +17,12 @@ namespace IteratedPrisonerDilemma2
             this.random = new Random (System.DateTime.Now.Millisecond);
 
             AnimalType cooperator = new AnimalType (new MoveStrategy((x, y) => PlayMoves.Cooperate), content.Load<Texture2D> ("blue_circle"),"Cooperator");
-            AnimalType defeater = new AnimalType (new MoveStrategy ((x, y) => PlayMoves.Defeat), content.Load<Texture2D> ("green_circle"),"Defeater");
+            AnimalType defeater = new AnimalType (new MoveStrategy ((x, y) => PlayMoves.Defect), content.Load<Texture2D> ("green_circle"),"Defector");
             AnimalType randomAnimal = new AnimalType ((x, y) => {
                 if (random.Next (2) < 1)
                     return PlayMoves.Cooperate;
                 else
-                    return PlayMoves.Defeat;
+                    return PlayMoves.Defect;
             }, content.Load<Texture2D> ("violet_circle"),"Random");
 
             AnimalType titForTat = new AnimalType ((myMoves, yourMoves) => {

@@ -20,7 +20,7 @@ namespace IteratedPrisonerDilemma2
     public delegate PlayMoves MoveStrategy(List<PlayMoves> myHistoryMoves, List<PlayMoves> opponentHistoryMoves);
     public enum PlayMoves  {
         Cooperate,
-        Defeat
+        Defect
     };
 
     public class Game1 : Game   
