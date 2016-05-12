@@ -18,7 +18,9 @@ namespace IteratedPrisonerDilemma2
         private Vector2 directionWithSpeed;
         private AnimalType animalType;
         private int score=0;
-
+        private int unavailabilityTimeAfterGame;
+        private Guid guid;
+        private Guid previousOpponent;
 
         public bool IsInaGame(List<PrisonerDilemmaSequenceOfIterations> games) {
             foreach (PrisonerDilemmaSequenceOfIterations game in games) {
@@ -28,12 +30,19 @@ namespace IteratedPrisonerDilemma2
             return false;
         }
 
+        public int Score {
+            get {
+                return score;
+            } 
+
+        }
+
         public Animal (AnimalType animalType) 
         {
             this.animalType = animalType;
             SetInitialRandomPosition ();
+            this.guid=Guid.NewGuid ();
         }
-
 
         public void AddScore(int addingScore) {
             this.score += addingScore;
@@ -50,8 +59,26 @@ namespace IteratedPrisonerDilemma2
             get {
                 return this.animalType;
             }
+            set {
+                this.animalType = value;
+            }
         }
 
+        public Guid AnimalId {
+            get {
+                return this.guid;
+            }
+        }
+
+        public Guid PreviousOpponent {
+            set {
+                this.previousOpponent = value;
+            }
+            get {
+                return this.previousOpponent;
+            }
+        }
+ 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw (this.animalType.Image,drawRectangle,Color.White);
@@ -59,7 +86,9 @@ namespace IteratedPrisonerDilemma2
 
 
         public void Update(GameTime gameTime, List<PrisonerDilemmaSequenceOfIterations> currentGames) {
+
             //if (!this.IsInaGame(currentGames) ) {
+
                 adjustDirection ();
                 adjustDirection ();
 
@@ -112,7 +141,6 @@ namespace IteratedPrisonerDilemma2
         public bool CollideWith(Animal other) {
             return this.drawRectangle.Intersects (other.drawRectangle);
         }
-
     }
 }
 

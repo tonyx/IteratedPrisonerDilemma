@@ -33,7 +33,6 @@ namespace IteratedPrisonerDilemma2
 
             },content.Load <Texture2D>("yellow_circle"),"TitForTat");
 
-
 //            AnimalType titForTat = new AnimalType ((x, y) => PlayMoves.Cooperate, content.Load<Texture2D> ("yellow_circle"),"TitForTat");
 
             animalTypes = new List<AnimalType> ();
@@ -41,28 +40,28 @@ namespace IteratedPrisonerDilemma2
             animals = new List<Animal> ();
 
             animalTypes.Add (titForTat);
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < Constants.ANIMAL_PER_TYPE; i++) {
                 animals.Add (new Animal (titForTat));
             }
 
             animalTypes.Add (defeater);
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < Constants.ANIMAL_PER_TYPE; i++) {
                 animals.Add (new Animal (defeater));
             }
 
-//            animalTypes.Add (randomAnimal);
-//            for (int i = 0; i < 10; i++) {
-//                animals.Add (new Animal (randomAnimal));
-//            }
-//
+            animalTypes.Add (randomAnimal);
+            for (int i = 0; i < Constants.ANIMAL_PER_TYPE; i++) {
+                animals.Add (new Animal (randomAnimal));
+            }
+
             animalTypes.Add(cooperator);
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < Constants.ANIMAL_PER_TYPE; i++) {
                 animals.Add (new Animal (cooperator));
             }
 
-
-            List<Animal> randomizedAnimals = animals.OrderBy (x => random.Next ()).ToList();
-            animals = randomizedAnimals;
+            // shuffle
+            List<Animal> shuffledAnimals = animals.OrderBy (x => random.Next ()).ToList();
+            animals = shuffledAnimals;
 
         }
 

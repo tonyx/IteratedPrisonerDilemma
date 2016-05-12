@@ -44,13 +44,6 @@ namespace IteratedPrisonerDilemma2
             this.payoffs = Constants.Instance ().payoff_matrix;
         }
 
-//        [MethodImpl(MethodImplOptions.Synchronized)] 
-//        public PrisonerDilemmaSequenceOfIterations (int numberOfIterations,MoveStrategy moveStrategy1, MoveStrategy moveStrategy2)
-//        {
-//            this.numberOfIterations = numberOfIterations;
-//            this.moveStrategy1 = moveStrategy1;
-//            this.moveStrategy2 = moveStrategy2;
-//        }
 
         public Animal Animal1 {
             get {
@@ -73,6 +66,9 @@ namespace IteratedPrisonerDilemma2
             this.animal1 = animal1;
             this.animal2 = animal2;
             this.payoffs = Constants.Instance ().payoff_matrix;
+
+            animal1.PreviousOpponent = animal2.AnimalId;
+            animal2.PreviousOpponent = animal1.AnimalId;
         }
 
         public bool IsaPlayerInThisGame(Animal animal) {
@@ -90,11 +86,7 @@ namespace IteratedPrisonerDilemma2
                 accumulMovesOfFirstPlayer.Add (currentPlayerOneMove);
                 accumulMovesOfSecondPlayer.Add (currentPlayerTwoMove);
 
-
-//                int[] currentScores = Constants.Instance ().payoff_matrix [new Tuple<PlayMoves,PlayMoves> (currentPlayerOneMove, currentPlayerTwoMove)];
-
                 int[] currentScores = payoffs[new Tuple<PlayMoves,PlayMoves> (currentPlayerOneMove, currentPlayerTwoMove)];
-
 
                 scores [0] += currentScores [0];
                 scores [1] += currentScores [1];
