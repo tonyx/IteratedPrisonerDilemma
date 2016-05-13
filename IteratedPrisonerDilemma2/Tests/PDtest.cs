@@ -157,7 +157,7 @@ namespace IteratedPrisonerDilemma2
 
             MoveStrategy defecter = (x,y) => PlayMoves.Defect;
             PrisonerDilemmaSequenceOfIterations game = new PrisonerDilemmaSequenceOfIterations (2,titForTat,defecter,payoff_matrix);
-            int[] scores = game.CumulateGamingScores();
+            int[] scores = game.Play();
             Assert.AreEqual (1, scores [0]);
             Assert.AreEqual (4, scores [1]);
         }

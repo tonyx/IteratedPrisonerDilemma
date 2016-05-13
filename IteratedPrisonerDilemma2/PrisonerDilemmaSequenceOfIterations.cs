@@ -75,7 +75,7 @@ namespace IteratedPrisonerDilemma2
             return animal==this.animal1 || animal==this.animal2;
         }
 
-        public int[] CumulateGamingScores() {
+        public int[] Play() {
             int[] scores = new int[]{ 0, 0 };
             List<PlayMoves> accumulMovesOfFirstPlayer = new List<PlayMoves> ();
             List<PlayMoves> accumulMovesOfSecondPlayer = new List<PlayMoves> ();

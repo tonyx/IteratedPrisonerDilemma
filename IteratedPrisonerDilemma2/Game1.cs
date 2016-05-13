@@ -63,7 +63,7 @@ namespace IteratedPrisonerDilemma2
         {
             // TODO: Add your initialization logic here
             games = new List<PrisonerDilemmaSequenceOfIterations>();
-            lastLog = 0;
+            lastLog = -Constants.INTERVAL_FOR_LOG_IN_SECONDS;
             csvFile = new StreamWriter (@Constants.CSV_FILE_OUTPUT_PATH + "PDSimulator.csv");
             csvFile.AutoFlush = true;
 
@@ -120,7 +120,6 @@ namespace IteratedPrisonerDilemma2
 
             // check for collisions for free animals and make them play
 
-
             for (int i = 0; i<animals.Count-1;i++) {
                 for (int j = i+1; j<animals.Count;j++) {
                    if (!animals.ElementAt(i).IsInaGame(games)&&!animals.ElementAt(j).IsInaGame(games)) {
@@ -132,11 +131,10 @@ namespace IteratedPrisonerDilemma2
                 }
             }
 
-
             // elaborate all current games:
 
             foreach (var game in games) {
-                int[] scores = game.CumulateGamingScores ();
+                int[] scores = game.Play ();
                 game.Animal1.AddScore (scores [0]);
                 game.Animal2.AddScore (scores [1]);
             }
@@ -146,30 +144,16 @@ namespace IteratedPrisonerDilemma2
             games = new List<PrisonerDilemmaSequenceOfIterations>();
 
             //Console.Out.WriteLine (gameTime.TotalGameTime);
-            if (gameTime.TotalGameTime.TotalSeconds - lastLog >= 5) {
+            if (gameTime.TotalGameTime.TotalSeconds - lastLog >= Constants.INTERVAL_FOR_LOG_IN_SECONDS) {
                 lastLog = gameTime.TotalGameTime.TotalSeconds;
 
                 foreach (var animaltype in animalTypes) {
                     int numAnimalOfCurrentType = animals.Count (x => x.AnimalType == animaltype);
-
                     int averageScore = (numAnimalOfCurrentType == 0 ? 0 : (animaltype.Score/numAnimalOfCurrentType));
-
-
-                        //(animals.Count())animaltype.Score / animals.Count (x => x.AnimalType == animaltype);
-    //                    Console.Out.WriteLine (gameTime.TotalGameTime+","+animaltype.AnimalTypeName+", "+animaltype.Score);
-
                     csvFile.WriteLine (gameTime.TotalGameTime.TotalSeconds+", "+animaltype.AnimalTypeName+", "+ numAnimalOfCurrentType+", "+ animaltype.Score+", "+(int)averageScore);
                 }
 
             }
-
-
-//            if (gameTime.TotalGameTime.TotalMilliseconds-lastLog>Constants.LOG_QUANTUM_TIME_IN_MILLIS) {
-//                lastLog = (int)gameTime.TotalGameTime.TotalMilliseconds;
-//                Console.Out.WriteLine ("out");
-//            }
-
-
 
             base.Update (gameTime);
         }

@@ -18,7 +18,6 @@ namespace IteratedPrisonerDilemma2
         private Vector2 directionWithSpeed;
         private AnimalType animalType;
         private int score=0;
-        private int unavailabilityTimeAfterGame;
         private Guid guid;
         private Guid previousOpponent;
 
