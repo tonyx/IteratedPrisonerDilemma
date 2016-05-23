@@ -33,6 +33,9 @@ namespace IteratedPrisonerDilemma2
             get {
                 return score;
             } 
+            set {
+                score = value;
+            }
 
         }
 

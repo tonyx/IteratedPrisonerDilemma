@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
+
 #endregion
 
 namespace IteratedPrisonerDilemma2
@@ -36,7 +37,6 @@ namespace IteratedPrisonerDilemma2
         double lastLog;
         StreamWriter csvFile;
 
-        //private Animal animal; //private Animal animal2;
         private List<PrisonerDilemmaSequenceOfIterations> games;
 
 
@@ -64,7 +64,10 @@ namespace IteratedPrisonerDilemma2
             // TODO: Add your initialization logic here
             games = new List<PrisonerDilemmaSequenceOfIterations>();
             lastLog = -Constants.INTERVAL_FOR_LOG_IN_SECONDS;
-            csvFile = new StreamWriter (@Constants.CSV_FILE_OUTPUT_PATH + "PDSimulator.csv");
+            csvFile = new StreamWriter (@Constants.CSV_FILE_OUTPUT_PATH + DateTime.Now.ToString().Replace("/","_").Replace(" ","_").Replace(":","_")+"_PDSimulator.csv");
+
+            csvFile.WriteLine("timebox, name, populationsize, totalscore, averagescore");
+
             csvFile.AutoFlush = true;
 
             base.Initialize ();
@@ -139,7 +142,8 @@ namespace IteratedPrisonerDilemma2
                 game.Animal2.AddScore (scores [1]);
             }
 
-            WeakerPlayerMayBecomeOfTheTypeOfTheStronger ();
+//            WeakerPlayerMayBecomeOfTheTypeOfTheStronger ();
+            EvolutionaryStep ();
 
             games = new List<PrisonerDilemmaSequenceOfIterations>();
 
@@ -189,16 +193,153 @@ namespace IteratedPrisonerDilemma2
             spriteBatch.End ();
             
             base.Draw (gameTime);
+        }
+
+        private double proportionOfAnimalPresence(AnimalType animalType) {
+            int nunAnimalOfTheType = animals.FindAll (x => x.AnimalType == animalType).Count;
+            int totalAnimals = animals.Count;
+            return (double)nunAnimalOfTheType / (double)totalAnimals;
+        }
+
+        private double relativeFitness(AnimalType animalType) {
+            int totalScore = animalTypes.Sum (x => x.Score);
+            int animalTypeScore = animalTypes.FindAll (x => x == animalType).Sum (x => x.Score);
+            return (double)animalTypeScore / (double)(totalScore);
+        }
+
+
+        private double totalFitnessPerPresencesOfType() {
+            double fitnessCounter = 0.0;
+            foreach (var animaltype in animalTypes) {
+                fitnessCounter += proportionOfAnimalPresence (animaltype) * relativeFitness (animaltype);
+            }
+            return fitnessCounter;
+        }
+
+        private double probabilityOfMutatingToType(AnimalType animalType) {
+            double proportionOfAnimalTypePresence = proportionOfAnimalPresence (animalType);
+            double relFitnessOfType = relativeFitness (animalType);
+            return proportionOfAnimalTypePresence * relFitnessOfType / totalFitnessPerPresencesOfType();
+        }
+
+        private double probabilityOfMutatingToType(AnimalType animalType,double totalFitness) {
+            
+            double proportionOfAnimalTypePresence = proportionOfAnimalPresence (animalType);
+            double relFitnessOfType = relativeFitness (animalType);
+            return proportionOfAnimalTypePresence * relFitnessOfType / totalFitness;
+        }
+
+
+
+        private void EvolutionaryStep() {
+            if (random.Next (4) == 1) {
+                // set the transitionProbabilities
+                double totalFitness = totalFitnessPerPresencesOfType();
+
+                Dictionary<AnimalType,double> transitionProbabilities = new Dictionary<AnimalType,double>();
+                foreach (var animalType in animalTypes) {
+                    transitionProbabilities.Add (animalType, probabilityOfMutatingToType (animalType,totalFitness));
+                }
+
+                var cumulativeProbabilities = CumulativeProbabilities (transitionProbabilities);
+
+                foreach (var animal in animals) {
+                    if (random.Next (1000) == 1) {
+                        // random mutate
+                        double nextRand = random.NextDouble();
+
+                        var keys = cumulativeProbabilities.Keys;
+
+                        var currentKey = keys.ElementAt (0); 
+                        foreach (var mKey in keys) {
+                            if (nextRand > cumulativeProbabilities [mKey]) {
+                                break;
+                            } else {
+                                currentKey = mKey;
+                            }
+                        }
+
+                        // mutation
+                        animal.AnimalType = currentKey;
+
+
+//                        var keySetcomposites = compositeTransitionProbabilities.Values; 
+//                        double currentKey = keySetcomposites.ElementAt (0); 
+//
+//                        foreach(var myKey in keySetcomposites) {
+//                            currentKey = myKey;
+//                            if (myKey < nextRand)
+//                                break;
+//                        }
+
+                        // get the type of the selected animal
+//                        animal.AnimalType = compositeTransitionProbabilities[currentKey];
+
+
+//                        while (currentKey=keySetComposities. > nextRand) {
+//                            currentKey=keySetcomposites.
+//                        }
+
+
+//                        do {
+//
+//                            AnimalType mutatingTo = 
+//                        }
+
+
+
+//                        AnimalType mutatingToType = compositeTransitionProbabilities [0];
+//                        while(randNext) {
+//                        }
+                    }
+
+                }
+
+                    
+
+                // randomly select a subset of animal and then apply the transformation according to the probabilities
+                foreach(var prob in transitionProbabilities ) {
+                    Console.Out.WriteLine (prob);
+
+                }
+
+//                Console.Out.WriteLine()
+//                foreach (var animal in animals) {
+//                    if (random.Next (10) == 1) {
+//
+//                    }
+
+                }
+
+        }
+
+
+
+        private Dictionary<AnimalType,double> CumulativeProbabilities(Dictionary<AnimalType,double> probValues) {
+            List<double> cumulatives = new List<double> ();
+            Dictionary<AnimalType,double>.ValueCollection values = probValues.Values;
+            Dictionary<AnimalType,double>.KeyCollection keys = probValues.Keys;
+
+            Dictionary<AnimalType,double> toReturn = new  Dictionary<AnimalType,double> ();
+
+            double prec = 0.0;
+            int index = 0;
+            foreach (var value in values) {
+
+                toReturn.Add (keys.ElementAt (index), value + prec);
+                prec = value + prec;
+                index++;
+
+            }
+
+            return toReturn;
 
         }
 
 
         private void WeakerPlayerMayBecomeOfTheTypeOfTheStronger() {
-
-            if (random.Next (10) == 1) {
-
+            if (random.Next (4) == 1) {
                 // the weaker transforms in the type of the stronger
-
                 int weakerScore = animals [0].Score;
                 Animal weakerAnimal = animals [0];
 
@@ -219,7 +360,27 @@ namespace IteratedPrisonerDilemma2
                     }
                 }
 
+
+
+
+
+//                int numAnimalOfStrongerType = animals.Count (x => x.AnimalType == strongerAnimal.AnimalType);
+//                int averageScoreOfStrongerType = strongerAnimal.Score / numAnimalOfStrongerType;
+//
+//
+//                AnimalType newType = animalTypes [random.Next(animalTypes.Count)];
+//                int numAnimalOfNewType = animals.Count (x => x.AnimalType == newType);
+//
+//                int averageScoreOfNewType = newType.Score / numAnimalOfNewType;
+
+//                weakerAnimal.AnimalType = newType;
+//                weakerAnimal.Score = averageScoreOfNewType;
+
+                //weakerAnimal.AnimalType = animalTypes [random.Next(animalTypes.Count)];
+
                 weakerAnimal.AnimalType = strongerAnimal.AnimalType;
+                //weakerAnimal.Score =  averageScoreOfStrongerType;
+
             }
 
         }

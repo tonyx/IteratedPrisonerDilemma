@@ -28,6 +28,7 @@ namespace IteratedPrisonerDilemma2
         public const int PANEL_STEP_ITEM = 50;
 
         public const float ANIMAL_SPEED = 0.30f;
+//        public const float ANIMAL_SPEED = 2.30f;
         public const int WINDOW_WIDTH = 800;
         public const int WINDOW_HEIGHT = 600;
 
