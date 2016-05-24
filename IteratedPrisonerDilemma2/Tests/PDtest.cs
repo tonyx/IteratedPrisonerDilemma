@@ -239,10 +239,6 @@ namespace IteratedPrisonerDilemma2
         }
     }
 
-//    public class ProbabilitiesOfChanging {
-//        public ProbabilitiesOfChanging(Dictionary<string,double> probValues) {
-//        }
-//    }
 
 }
 

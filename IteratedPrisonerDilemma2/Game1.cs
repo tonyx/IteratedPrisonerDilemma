@@ -230,7 +230,6 @@ namespace IteratedPrisonerDilemma2
         }
 
 
-
         private void EvolutionaryStep() {
             if (random.Next (4) == 1) {
                 // set the transitionProbabilities
@@ -245,7 +244,6 @@ namespace IteratedPrisonerDilemma2
 
                 foreach (var animal in animals) {
                     if (random.Next (1000) == 1) {
-                        // random mutate
                         double nextRand = random.NextDouble();
 
                         var keys = cumulativeProbabilities.Keys;
@@ -258,63 +256,20 @@ namespace IteratedPrisonerDilemma2
                                 currentKey = mKey;
                             }
                         }
-
-                        // mutation
                         animal.AnimalType = currentKey;
-
-
-//                        var keySetcomposites = compositeTransitionProbabilities.Values; 
-//                        double currentKey = keySetcomposites.ElementAt (0); 
-//
-//                        foreach(var myKey in keySetcomposites) {
-//                            currentKey = myKey;
-//                            if (myKey < nextRand)
-//                                break;
-//                        }
-
-                        // get the type of the selected animal
-//                        animal.AnimalType = compositeTransitionProbabilities[currentKey];
-
-
-//                        while (currentKey=keySetComposities. > nextRand) {
-//                            currentKey=keySetcomposites.
-//                        }
-
-
-//                        do {
-//
-//                            AnimalType mutatingTo = 
-//                        }
-
-
-
-//                        AnimalType mutatingToType = compositeTransitionProbabilities [0];
-//                        while(randNext) {
-//                        }
                     }
-
                 }
-
-                    
-
-                // randomly select a subset of animal and then apply the transformation according to the probabilities
-                foreach(var prob in transitionProbabilities ) {
-                    Console.Out.WriteLine (prob);
-
-                }
-
-//                Console.Out.WriteLine()
-//                foreach (var animal in animals) {
-//                    if (random.Next (10) == 1) {
-//
-//                    }
-
-                }
-
+            }
         }
 
 
 
+        /// <summary>
+        /// will transform a dictionary <animaltype,probability>, to a dictionary <animaltype,limit_interval>
+        /// example: (type1,0.3), (type2,0.3),(type4,0.4) is transformed into: (type1,0.3), (type2,0.6),(type3,1.0)
+        /// </summary>
+        /// <returns>the dictionary rearranged according to the example in summary</returns>
+        /// <param name="probValues">Prob values.</param>
         private Dictionary<AnimalType,double> CumulativeProbabilities(Dictionary<AnimalType,double> probValues) {
             List<double> cumulatives = new List<double> ();
             Dictionary<AnimalType,double>.ValueCollection values = probValues.Values;
@@ -325,66 +280,12 @@ namespace IteratedPrisonerDilemma2
             double prec = 0.0;
             int index = 0;
             foreach (var value in values) {
-
                 toReturn.Add (keys.ElementAt (index), value + prec);
                 prec = value + prec;
                 index++;
-
             }
-
             return toReturn;
-
         }
-
-
-        private void WeakerPlayerMayBecomeOfTheTypeOfTheStronger() {
-            if (random.Next (4) == 1) {
-                // the weaker transforms in the type of the stronger
-                int weakerScore = animals [0].Score;
-                Animal weakerAnimal = animals [0];
-
-                foreach (var animal in animals) {
-                    if (animal.Score < weakerScore) {
-                        weakerScore = animal.Score;
-                        weakerAnimal = animal;
-                    }
-                }
-
-                int highestScore = animals [0].Score;
-                Animal strongerAnimal = animals [0];
-
-                foreach (var animal in animals) {
-                    if (animal.Score > highestScore) {
-                        highestScore = animal.Score;
-                        strongerAnimal = animal;
-                    }
-                }
-
-
-
-
-
-//                int numAnimalOfStrongerType = animals.Count (x => x.AnimalType == strongerAnimal.AnimalType);
-//                int averageScoreOfStrongerType = strongerAnimal.Score / numAnimalOfStrongerType;
-//
-//
-//                AnimalType newType = animalTypes [random.Next(animalTypes.Count)];
-//                int numAnimalOfNewType = animals.Count (x => x.AnimalType == newType);
-//
-//                int averageScoreOfNewType = newType.Score / numAnimalOfNewType;
-
-//                weakerAnimal.AnimalType = newType;
-//                weakerAnimal.Score = averageScoreOfNewType;
-
-                //weakerAnimal.AnimalType = animalTypes [random.Next(animalTypes.Count)];
-
-                weakerAnimal.AnimalType = strongerAnimal.AnimalType;
-                //weakerAnimal.Score =  averageScoreOfStrongerType;
-
-            }
-
-        }
-
     }
 }
 
