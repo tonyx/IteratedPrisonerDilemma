@@ -96,7 +96,6 @@ namespace IteratedPrisonerDilemma2
         
         public void UpdateGametime(GameTime gameTime) {
             this.ellapsedGameTime += gameTime.ElapsedGameTime.Milliseconds;
-            Console.Out.WriteLine (ellapsedGameTime);
         }
 
     }

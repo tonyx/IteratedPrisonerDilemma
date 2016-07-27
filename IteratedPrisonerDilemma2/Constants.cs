@@ -12,6 +12,7 @@ namespace IteratedPrisonerDilemma2
 
         public const int INTERVAL_FOR_LOG_IN_SECONDS = 20;
         public const string CSV_FILE_OUTPUT_PATH = "/Users/Tonyx/IteratedPrisonerDilemmaSimulations/";
+        public const bool WRITE_TO_LOG = true;
 
         public const int LOG_QUANTUM_TIME_IN_MILLIS = 100000;
 
@@ -28,7 +29,6 @@ namespace IteratedPrisonerDilemma2
         public const int PANEL_STEP_ITEM = 50;
 
         public const float ANIMAL_SPEED = 0.30f;
-//        public const float ANIMAL_SPEED = 2.30f;
         public const int WINDOW_WIDTH = 800;
         public const int WINDOW_HEIGHT = 600;
 

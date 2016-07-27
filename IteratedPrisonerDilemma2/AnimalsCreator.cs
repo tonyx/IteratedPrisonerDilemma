@@ -16,10 +16,9 @@ namespace IteratedPrisonerDilemma2
         {
             this.random = new Random (System.DateTime.Now.Millisecond);
 
-
-
             AnimalType cooperator = new AnimalType ((x, y) => PlayMoves.Cooperate, content.Load<Texture2D> ("blue_circle"),"Cooperator");
-            AnimalType defeater = new AnimalType (new MoveStrategy ((x, y) => PlayMoves.Defect), content.Load<Texture2D> ("green_circle"),"Defector");
+
+            AnimalType defector = new AnimalType (new MoveStrategy ((x, y) => PlayMoves.Defect), content.Load<Texture2D> ("green_circle"),"Defector");
             AnimalType randomAnimal = new AnimalType ((x, y) => {
                 if (random.Next (2) < 1)
                     return PlayMoves.Cooperate;
@@ -36,7 +35,6 @@ namespace IteratedPrisonerDilemma2
 
             },content.Load <Texture2D>("yellow_circle"),"TitForTat");
 
-
             AnimalType titForTwoTats = new AnimalType ((myMoves, yourMoves) => {
                 if (yourMoves == null || yourMoves.Count <= 1)
                     return PlayMoves.Cooperate;
@@ -47,7 +45,7 @@ namespace IteratedPrisonerDilemma2
                         return PlayMoves.Cooperate;
                 }
 
-            }, content.Load<Texture2D> ("brown_circle"), "TitForTwoTats");
+            }, content.Load<Texture2D> ("brown_circle"), "TFtwoT");
 
 
             animalTypes = new List<AnimalType> ();
@@ -55,13 +53,14 @@ namespace IteratedPrisonerDilemma2
             animals = new List<Animal> ();
 
             animalTypes.Add (titForTat);
-            for (int i = 0; i < (Constants.ANIMAL_PER_TYPE)/2; i++) {
+            for (int i = 0; i < (Constants.ANIMAL_PER_TYPE); i++) {
                 animals.Add (new Animal (titForTat));
             }
 
-            animalTypes.Add (defeater);
+
+            animalTypes.Add(defector); 
             for (int i = 0; i < Constants.ANIMAL_PER_TYPE; i++) {
-                animals.Add (new Animal (defeater));
+                animals.Add (new Animal (defector))
             }
 
             animalTypes.Add (randomAnimal);
@@ -75,7 +74,7 @@ namespace IteratedPrisonerDilemma2
             }
 
             animalTypes.Add(titForTwoTats);
-            for (int i = 0; i < (Constants.ANIMAL_PER_TYPE)/2; i++) {
+            for (int i = 0; i < (Constants.ANIMAL_PER_TYPE); i++) {
                 animals.Add (new Animal (titForTwoTats));
             }
 
@@ -85,19 +84,6 @@ namespace IteratedPrisonerDilemma2
 
         }
 
-
-        public List<Animal> ListOfAnimals {
-            get {
-                return animals;
-            }
-        }
-
-        public List<Animal> ListOfAnimalTypes {
-            get {
-                return animals;
-            }
-        }
-
         public List<Animal> Animals() {
             return animals;
         }
@@ -105,7 +91,6 @@ namespace IteratedPrisonerDilemma2
         public List<AnimalType> AnimalTypes() {
             return animalTypes;
         }
-
     }
 }
 

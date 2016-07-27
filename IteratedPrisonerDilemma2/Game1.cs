@@ -1,4 +1,5 @@
-﻿#region Using Statements
+﻿
+#region Using Statements
 using System;
 
 using Microsoft.Xna.Framework;
@@ -8,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-
+using System.Diagnostics.Contracts;
 
 #endregion
 
@@ -18,12 +19,12 @@ namespace IteratedPrisonerDilemma2
     /// This is the main type for your game.
     /// </summary>
 
-
     public delegate PlayMoves MoveStrategy(List<PlayMoves> myHistoryMoves, List<PlayMoves> opponentHistoryMoves);
     public enum PlayMoves  {
         Cooperate,
         Defect
     };
+
 
     public class Game1 : Game   
     {
@@ -38,7 +39,6 @@ namespace IteratedPrisonerDilemma2
         StreamWriter csvFile;
 
         private List<PrisonerDilemmaSequenceOfIterations> games;
-
 
         public Game1 ()
         {
@@ -88,7 +88,6 @@ namespace IteratedPrisonerDilemma2
             animals = animalsCreator.Animals ();
             animalTypes = animalsCreator.AnimalTypes ();
 
-
             //TODO: use this.Content to load your game content here 
         }
 
@@ -99,8 +98,6 @@ namespace IteratedPrisonerDilemma2
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update (GameTime gameTime)
         {
-
-
             // For Mobile devices, this logic will close the Game when the Back button is pressed
             // Exit() is obsolete on iOS
             #if !__IOS__
@@ -121,8 +118,6 @@ namespace IteratedPrisonerDilemma2
             }
 
 
-            // check for collisions for free animals and make them play
-
             for (int i = 0; i<animals.Count-1;i++) {
                 for (int j = i+1; j<animals.Count;j++) {
                    if (!animals.ElementAt(i).IsInaGame(games)&&!animals.ElementAt(j).IsInaGame(games)) {
@@ -134,33 +129,42 @@ namespace IteratedPrisonerDilemma2
                 }
             }
 
-            // elaborate all current games:
-
             foreach (var game in games) {
                 int[] scores = game.Play ();
                 game.Animal1.AddScore (scores [0]);
                 game.Animal2.AddScore (scores [1]);
             }
 
-//            WeakerPlayerMayBecomeOfTheTypeOfTheStronger ();
-            EvolutionaryStep ();
+            WeakerAnimalMutatesAccordingToReplDynamics ();
 
             games = new List<PrisonerDilemmaSequenceOfIterations>();
 
-            //Console.Out.WriteLine (gameTime.TotalGameTime);
-            if (gameTime.TotalGameTime.TotalSeconds - lastLog >= Constants.INTERVAL_FOR_LOG_IN_SECONDS) {
-                lastLog = gameTime.TotalGameTime.TotalSeconds;
-
-                foreach (var animaltype in animalTypes) {
-                    int numAnimalOfCurrentType = animals.Count (x => x.AnimalType == animaltype);
-                    int averageScore = (numAnimalOfCurrentType == 0 ? 0 : (animaltype.Score/numAnimalOfCurrentType));
-                    csvFile.WriteLine (gameTime.TotalGameTime.TotalSeconds+", "+animaltype.AnimalTypeName+", "+ numAnimalOfCurrentType+", "+ animaltype.Score+", "+(int)averageScore);
-                }
-
-            }
+            WriteToLogIfItIsEnabled(gameTime);
 
             base.Update (gameTime);
         }
+
+
+
+        private void WriteToLogIfItIsEnabled(GameTime gameTime)
+        {
+            if (Constants.WRITE_TO_LOG)
+            {
+                if (gameTime.TotalGameTime.TotalSeconds - lastLog >= Constants.INTERVAL_FOR_LOG_IN_SECONDS)
+                {
+                    lastLog = gameTime.TotalGameTime.TotalSeconds;
+
+                    foreach (var animaltype in animalTypes)
+                    {
+                        int numAnimalOfCurrentType = animals.Count(x => x.AnimalType == animaltype);
+                        int averageScore = (numAnimalOfCurrentType == 0 ? 0 : (animaltype.Score / numAnimalOfCurrentType));
+                        csvFile.WriteLine(gameTime.TotalGameTime.TotalSeconds + ", " + animaltype.AnimalTypeName + ", " + numAnimalOfCurrentType + ", " + animaltype.Score + ", " + (int)averageScore);
+                    }
+                }
+            }
+        }
+
+
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -177,7 +181,6 @@ namespace IteratedPrisonerDilemma2
                 animal.Draw (spriteBatch);
             }
 
-
             int index = 0;
             foreach (var animalType in animalTypes) {
 
@@ -193,13 +196,63 @@ namespace IteratedPrisonerDilemma2
             spriteBatch.End ();
             
             base.Draw (gameTime);
+        } 
+
+
+
+        //private double proportionOfAnimalPresence(AnimalType animalType) {
+        //    int nunAnimalOfTheType = animals.FindAll (x => x.AnimalType == animalType).Count;
+        //    int totalAnimals = animals.Count;
+        //    return (double)nunAnimalOfTheType / (double)totalAnimals;
+        //}
+
+
+        private double ProportionOfAnimalTypeInCurrentPopulation(AnimalType animalType)
+        {
+            int totalNumberOfAnimals = this.animals.Count;
+            return (double)this.animals.FindAll(x => x.AnimalType == animalType).Count / (double)totalNumberOfAnimals;
         }
 
-        private double proportionOfAnimalPresence(AnimalType animalType) {
-            int nunAnimalOfTheType = animals.FindAll (x => x.AnimalType == animalType).Count;
-            int totalAnimals = animals.Count;
-            return (double)nunAnimalOfTheType / (double)totalAnimals;
+        private double AverageFitnessForAnimalOfType(AnimalType animalType)
+        {
+            var animalsOfThatType = this.animals.FindAll(x => x.AnimalType == animalType);
+            int fitnessForType = animalsOfThatType.Sum(x => x.Score);
+            //int numberOfAnimalOfTheType = this.animals.FindAll(x => x.AnimalType == animalType).Count;
+
+            int numberOfAnimalOfTheType = animalsOfThatType.Count;
+            return (double)fitnessForType / (double)numberOfAnimalOfTheType;
         }
+
+        private double TotalProportionTimesFitness()
+        {
+            double accumul = 0;
+            foreach (var innerAnimalType in this.animalTypes)
+            {
+                accumul += AverageFitnessForAnimalOfType(innerAnimalType)*ProportionOfAnimalTypeInCurrentPopulation(innerAnimalType);
+            }
+            return accumul;
+        }
+
+        private double ProbabilityOfMutationToType(AnimalType animalType)
+        {
+            return (double)ProportionOfAnimalTypeInCurrentPopulation(animalType) * AverageFitnessForAnimalOfType(animalType) /
+                (double)TotalProportionTimesFitness();
+        }
+
+        // keep
+        private Dictionary<AnimalType, double> ProbabilityTransitionVector()
+        {
+            Dictionary<AnimalType, double> toReturn = new Dictionary<AnimalType, double>();
+            double denominator = TotalProportionTimesFitness();
+
+            foreach (var animalType in this.animalTypes)
+            {
+                toReturn.Add(animalType, (double)(ProportionOfAnimalTypeInCurrentPopulation(animalType) * AverageFitnessForAnimalOfType(animalType)) / (double)denominator);
+            }
+            Contract.Ensures(toReturn.Values.Sum() - 1 < 0.1 || toReturn.Values.Sum() > -0.01);
+            return toReturn;
+        }
+
 
         private double relativeFitness(AnimalType animalType) {
             int totalScore = animalTypes.Sum (x => x.Score);
@@ -208,57 +261,38 @@ namespace IteratedPrisonerDilemma2
         }
 
 
-        private double totalFitnessPerPresencesOfType() {
-            double fitnessCounter = 0.0;
-            foreach (var animaltype in animalTypes) {
-                fitnessCounter += proportionOfAnimalPresence (animaltype) * relativeFitness (animaltype);
-            }
-            return fitnessCounter;
-        }
+        private void WeakerAnimalMutatesAccordingToReplDynamics() 
+        {
+            if (random.Next(100) == 1)
+            {
+                var orderAnimals = animals.OrderBy(x => x.Score);
+                var weakerAnimal = orderAnimals.First();
 
-        private double probabilityOfMutatingToType(AnimalType animalType) {
-            double proportionOfAnimalTypePresence = proportionOfAnimalPresence (animalType);
-            double relFitnessOfType = relativeFitness (animalType);
-            return proportionOfAnimalTypePresence * relFitnessOfType / totalFitnessPerPresencesOfType();
-        }
+                // weakerAnimalMutates
 
-        private double probabilityOfMutatingToType(AnimalType animalType,double totalFitness) {
-            
-            double proportionOfAnimalTypePresence = proportionOfAnimalPresence (animalType);
-            double relFitnessOfType = relativeFitness (animalType);
-            return proportionOfAnimalTypePresence * relFitnessOfType / totalFitness;
-        }
+                var transitionProbabilities = ProbabilityTransitionVector();
+                var requiresSumIsApprox1 = transitionProbabilities.Values.Sum();
+                if (requiresSumIsApprox1 - 1 > 0.1 || requiresSumIsApprox1 < 0.01)
+                    throw new ApplicationException("error in prerequisite of matrix");
 
-
-        private void EvolutionaryStep() {
-            if (random.Next (4) == 1) {
-                // set the transitionProbabilities
-                double totalFitness = totalFitnessPerPresencesOfType();
-
-                Dictionary<AnimalType,double> transitionProbabilities = new Dictionary<AnimalType,double>();
-                foreach (var animalType in animalTypes) {
-                    transitionProbabilities.Add (animalType, probabilityOfMutatingToType (animalType,totalFitness));
-                }
-
-                var cumulativeProbabilities = CumulativeProbabilities (transitionProbabilities);
-
-                foreach (var animal in animals) {
-                    if (random.Next (1000) == 1) {
-                        double nextRand = random.NextDouble();
-
-                        var keys = cumulativeProbabilities.Keys;
-
-                        var currentKey = keys.ElementAt (0); 
-                        foreach (var mKey in keys) {
-                            if (nextRand > cumulativeProbabilities [mKey]) {
-                                break;
-                            } else {
-                                currentKey = mKey;
-                            }
-                        }
-                        animal.AnimalType = currentKey;
+                var cumulativeProbabilities = CumulativeProbabilities(transitionProbabilities);
+                double nextRand = random.NextDouble();
+                var keys = cumulativeProbabilities.Keys;
+                var currentKey = keys.ElementAt(0);
+                foreach (var mKey in keys)
+                {
+                    if (nextRand > cumulativeProbabilities[mKey])
+                    {
+                        break;
+                    }
+                    else {
+                        currentKey = mKey;
                     }
                 }
+                weakerAnimal.AnimalType = currentKey;
+                var animalsOfThatType = animals.FindAll(x => x.AnimalType == currentKey);
+                int averageScoreofType = animalsOfThatType.Sum(x => x.Score)/animalsOfThatType.Count;
+                weakerAnimal.Score = averageScoreofType;
             }
         }
 
@@ -288,4 +322,3 @@ namespace IteratedPrisonerDilemma2
         }
     }
 }
-
